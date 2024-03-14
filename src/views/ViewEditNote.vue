@@ -31,10 +31,10 @@ const router = useRouter()
 const noteContentRef = ref('')
 const storeNotes = useStoreNotes()
 
-noteContentRef.value = storeNotes.getNoteContent(parseInt(route.params.id))
+noteContentRef.value = storeNotes.getNoteContent(route.params.id)
 
 const handleSaveClick = () => {
-  storeNotes.updateNote(parseInt(route.params.id), noteContentRef.value)
+  storeNotes.updateNote(route.params.id, noteContentRef.value)
 
   router.back()
 }

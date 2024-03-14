@@ -28,7 +28,7 @@ defineProps({
     default: false
   },
   noteId: {
-    type: Number,
+    type: String,
     required: true
   }
 })
