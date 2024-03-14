@@ -1,43 +1,47 @@
 import { defineStore } from 'pinia'
+import { collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore'
+import { db } from '@/db/firebase'
+
+const notesCollectionRef = collection(db, 'notes')
 
 export const useStoreNotes = defineStore('storeNotes', {
   state: () => ({
-    notes: [
-      {
-        id: 1,
-        content:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. A minima, quos optio ut in vel mollitia blanditiis quas ipsa culpa aliquid cupiditate quibusdam tempore dignissimos nobis nemo, id corporis deleniti!'
-      },
-      {
-        id: 2,
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. '
-      }
-    ]
+    notes: []
   }),
   actions: {
-    addNote(newNoteContent) {
-      console.log('addNote :', newNoteContent)
+    async getNotes() {
+      onSnapshot(notesCollectionRef, (querySnapshot) => {
+        let notes = []
 
-      const id = new Date().getTime()
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          let note = { id: doc.id, content: doc.data().content }
 
-      const note = {
-        id,
+          notes.push(note)
+        })
+
+        this.notes = notes
+      })
+    },
+    async addNote(newNoteContent) {
+      const id = new Date().getTime().toString()
+
+      await setDoc(doc(notesCollectionRef, id), {
         content: newNoteContent
-      }
-
-      this.notes.unshift(note)
+      })
     },
-    updateNote(id, newNoteContent) {
-      const index = this.notes.findIndex((note) => note.id === id)
-      this.notes[index].content = newNoteContent
+    async updateNote(id, content) {
+      await updateDoc(doc(notesCollectionRef, id.toString()), {
+        content
+      })
     },
-    deleteNote(id) {
-      console.log('deleteNote id :', id)
-      this.notes = this.notes.filter((note) => note.id !== id)
+    async deleteNote(id) {
+      await deleteDoc(doc(notesCollectionRef, id))
     }
   },
   getters: {
-    getNoteContent: (state) => (id) => state.notes.find((note) => note.id === id).content,
+    getNoteContent: (state) => (id) =>
+      state.notes.find((note) => note.id === id.toString()).content,
     getNoteById: (state) => (id) => {
       return state.notes.find((note) => note.id === id)
     },
