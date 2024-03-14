@@ -12,12 +12,23 @@
       ></AddEditNote
     >
 
-    <NoteItem v-for="note in storeNotes.notes" :key="note.id" :note="note" />
+    <progress v-if="!storeNotes.notesLoaded" class="progress is-large is-success" max="100" />
+
+    <template v-else>
+      <NoteItem v-for="note in storeNotes.notes" :key="note.id" :note="note" />
+
+      <div
+        v-if="!storeNotes.notes.length"
+        class="is-size-4 has-text-centered has-text-grey-light is-family-monospace py-6"
+      >
+        No notes yet...
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref /* , watch */ } from 'vue'
 import NoteItem from '@/components/notes/NoteItem.vue'
 import AddEditNote from '@/components/notes/AddEditNote.vue'
 import { useStoreNotes } from '@/stores/storeNotes'
@@ -33,10 +44,10 @@ const addNote = () => {
   addEditNoteRef.value.focusTextArea()
 }
 
-watch(newNote, (newValue) => {
-  console.log('newValue :', newValue)
+/* watch(newNote, (newValue) => {
+  // console.log('newValue :', newValue)
   // storeNotes.updateLocalStorage()
-})
+}) */
 </script>
 
 <style lang="scss" scoped></style>
