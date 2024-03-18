@@ -6,6 +6,7 @@ import {
   signOut
 } from 'firebase/auth'
 import { auth } from '@/db/firebase'
+import { useStoreNotes } from '@/stores/storeNotes'
 
 export const useStoreAuth = defineStore('storeAuth', {
   state: () => ({
@@ -13,6 +14,8 @@ export const useStoreAuth = defineStore('storeAuth', {
   }),
   actions: {
     init() {
+      const storeNotes = useStoreNotes()
+
       onAuthStateChanged(auth, (user) => {
         if (user) {
           console.log('User logged IN', user)
@@ -20,11 +23,14 @@ export const useStoreAuth = defineStore('storeAuth', {
           this.user.id = user.uid
           this.user.email = user.email
 
+          storeNotes.init()
+
           this.router.push('/')
         } else {
           console.log('User logged OUT', user)
 
           this.user = {}
+          storeNotes.clearNotes()
 
           this.router.replace('/auth')
         }
@@ -33,6 +39,7 @@ export const useStoreAuth = defineStore('storeAuth', {
     register(credentials) {
       console.log('[authStore] register', credentials)
       const { email, password } = credentials
+
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed up
