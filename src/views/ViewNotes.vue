@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import NoteItem from '@/components/notes/NoteItem.vue'
 import AddEditNote from '@/components/notes/AddEditNote.vue'
 import { useStoreNotes } from '@/stores/storeNotes'
@@ -36,10 +36,6 @@ import { useStoreNotes } from '@/stores/storeNotes'
 const storeNotes = useStoreNotes()
 const newNote = ref('')
 const addEditNoteRef = ref(null)
-
-onMounted(() => {
-  storeNotes.getNotes()
-})
 
 const addNote = () => {
   storeNotes.addNote(newNote.value)
