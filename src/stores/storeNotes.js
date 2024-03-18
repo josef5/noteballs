@@ -33,7 +33,11 @@ export const useStoreNotes = defineStore('storeNotes', {
     async getNotes() {
       this.notesLoaded = false
 
-      onSnapshot(notesCollectionQuery, (querySnapshot) => {
+      if (unsubscribeNotesSnapshot) {
+        unsubscribeNotesSnapshot()
+      }
+
+      unsubscribeNotesSnapshot = onSnapshot(notesCollectionQuery, (querySnapshot) => {
         let notes = []
 
         querySnapshot.forEach((doc) => {
@@ -62,6 +66,13 @@ export const useStoreNotes = defineStore('storeNotes', {
     },
     async deleteNote(id) {
       await deleteDoc(doc(notesCollectionRef, id))
+    },
+    clearNotes() {
+      this.notes = []
+
+      if (unsubscribeNotesSnapshot) {
+        unsubscribeNotesSnapshot()
+      }
     }
   },
   getters: {
