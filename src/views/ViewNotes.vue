@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref /* , watch */ } from 'vue'
+import { ref, onMounted } from 'vue'
 import NoteItem from '@/components/notes/NoteItem.vue'
 import AddEditNote from '@/components/notes/AddEditNote.vue'
 import { useStoreNotes } from '@/stores/storeNotes'
@@ -37,17 +37,16 @@ const storeNotes = useStoreNotes()
 const newNote = ref('')
 const addEditNoteRef = ref(null)
 
+onMounted(() => {
+  storeNotes.getNotes()
+})
+
 const addNote = () => {
   storeNotes.addNote(newNote.value)
 
   newNote.value = ''
   addEditNoteRef.value.focusTextArea()
 }
-
-/* watch(newNote, (newValue) => {
-  // console.log('newValue :', newValue)
-  // storeNotes.updateLocalStorage()
-}) */
 </script>
 
 <style lang="scss" scoped></style>
