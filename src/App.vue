@@ -7,14 +7,14 @@
 </template>
 
 <script setup>
-import { useStoreNotes } from '@/stores/storeNotes'
 import { onMounted } from 'vue'
+import { useStoreAuth } from '@/stores/storeAuth'
 import NavBar from './components/layout/NavBar.vue'
 
-const storeNotes = useStoreNotes()
+const storeAuth = useStoreAuth()
 
 onMounted(() => {
-  storeNotes.getNotes()
+  storeAuth.init()
 })
 </script>
 
